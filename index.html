@@ -756,9 +756,9 @@
 
     <script>
       
-      let cartTotal = 0;
-      let favTotal= 0;
-      let deletedTotal = 0;
+      let cartItems = 0;
+      let favItems= 0;
+      let deletedItems = 0;
 
       let cartItem = [];
       let favoriteItem = [];
@@ -780,22 +780,63 @@
     }
 
        function addToCart(name, price) {
-        cartTotal += price;
+           
+        cartItems.push({ name, price });
+           
+           cartTotal = cartItems.reduce((sum, item) => sum
+       + item.price, 0);
+           
         document.getElementById("total").innerText = "$" 
         + cartTotal;
+
+           localStorage.setItem("cart", 
+        JSON.stringify(cartItems));
+           
         showMsg(name + " aded to cart!");
         
       }
 
       function addToFavorite(name) {
 
-        favTotal++;
+        if(!favoriteItems.inclues(name)) {
+            favoriteItems.push(name);
+            favTotal = favoriteItems.length;
 
-        document.getElementById("total-fav").innerText =
+         document.getElementById("total-fav").innerText =
         favTotal;
-         showMsg(name + " aded to favorites!");
+
+            localStorage.setItem("favorites", 
+        JSON.stringify(favoriteItems));
+
+            showMsg(name + " added to favorites!");
+        } else {
+            showMsg(name + " already added to favorites!");
+        }
         
       }
+
+         window.addEventListener("DOMContentLoaded", ()
+            => {
+
+                const savedCart = localStorage.getItem("cart");
+                const savedFav = localStorage.getItem("favorites");
+
+                if(savedCart) {
+                    cartItems = JSON.parse(savedCart);
+                    cartTotal = cartItems.reduce((sum, item) => 
+                      sum + item.price, 0);
+                    document.getElementById("total").innerText =
+                        "$" + cartTotal;
+                }
+                if(savedFav) {
+                    favoriteItems = JSON.parse(savedFav);
+                    favTotal = favItems.length;
+                    document.getElementById("total-fav").innerText =
+                        "$" + favTotal;
+                }
+                
+            });
+
 
       function removeFromFavorite(name) {
         functionItem = favoriteItems.filter(item =>
@@ -805,29 +846,52 @@
           = favTotal;
           showMsg('${name} removed from favorites!')
       }
+        
      function deltedItem(name) {
+         
        cartItems = cartItems.filter(item =>
         item.name !== name);
-        cartTotal = cartItems.length;
-        document.getElementById("total").innerText =
-         "$" + cartTotal;
-
-         favoriteItems = favoriteItems.filter(item =>
+          cartTotal = cartItems.length;
+       favoriteItems = favoriteItems.filter(item =>
           item.name !== name);
           favTotal = favItems.length;
-          document.getElementById("total-fav").innerText 
+
+        document.getElementById("total").innerText =
+         "$" + cartTotal;
+        document.getElementById("total-fav").innerText 
           = favTotal;
 
-          deletedTotal += 1;
+          deletedTotal ++;
 
           document.getElementById("total-deleted").innerText
           = deletedTotal;
 
+         localStorage.setItems("cart",
+          JSON.stringify(cartItems));
+         localStorage.setItems("favorites",
+          JSON.stringify(favoriteItems));
+
           showMsg('${name} deleted!')
               }
 
-      
+        function clearCart() {
+          cartItems = [];
+          cartTotal = 0;
 
+            document.getElementById("total").innerText =
+                "$0";
+            localStorage.removeItems("cart");
+        }
+        function clearFavorites() {
+            favoriteItems = [];
+            favTotal = 0;
+
+            document.getElementById("total-fav").innerText =
+                0;
+            localStorage.removeItem("favorites");
+        }
+
+        
       let lastScroll = 0
       const nav = document.querySelector(".container")
 
