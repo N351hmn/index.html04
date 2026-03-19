@@ -799,7 +799,8 @@
       function addToFavorite(name) {
 
         if(!favoriteItems.includes(name)) {
-            favoriteItems.push(name);
+            favoriteItems = favoriteItems.filter(item => item !
+                == name);
             favTotal = favoriteItems.length;
 
          document.getElementById("total-fav").innerText =
@@ -832,7 +833,7 @@
                     favoriteItems = JSON.parse(savedFav);
                     favTotal = favoriteItems.length;
                     document.getElementById("total-fav").innerText =
-                        "$" + favTotal;
+                       favTotal;
                 }
                 
             });
@@ -849,19 +850,19 @@
         
      function deletedItems(name) {
          
-       cartItems = cartItems.filter(item =>
-        item.name !== name);
+       cartItems = cartItems.filter(item => item.name !
+    == name);
        favoriteItems = favoriteItems.filter(item =>
-        item.name !== name);
+    item !== name);
 
-         cartTotal = cartItems.reduce((sum, item) => 
-     sum + item.price, 0);
+         cartTotal = cartItems.reduce((sum, item) => sum 
+    + item.price, 0);
          favTotal = favoriteItems.length;
          
-        document.getElementById("total").innerText =
-         "$" + cartTotal;
-        document.getElementById("total-fav").innerText 
-          = favTotal;
+        document.getElementById("total").innerText = "$" 
+    + cartTotal;
+        document.getElementById("total-fav").innerText = 
+    favTotal;
 
           deletedTotal ++;
 
