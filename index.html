@@ -760,7 +760,7 @@
       let favoriteItems = [];
 
       let cartTotal = 0;
-      let favTotal 0;
+      let favTotal = 0;
       let deletedTotal = 0;
 
         function showMsg(msg) {
@@ -830,7 +830,7 @@
                 }
                 if(savedFav) {
                     favoriteItems = JSON.parse(savedFav);
-                    favTotal = favorioteItems.length;
+                    favTotal = favoriteItems.length;
                     document.getElementById("total-fav").innerText =
                         "$" + favTotal;
                 }
@@ -847,7 +847,7 @@
           showMsg('${name} removed from favorites!')
       }
         
-     function deltedItems(name) {
+     function deletedItems(name) {
          
        cartItems = cartItems.filter(item =>
         item.name !== name);
@@ -868,9 +868,9 @@
           document.getElementById("total-deleted").innerText
           = deletedTotal;
 
-         localStorage.setItems("cart",
+         localStorage.setItem("cart",
           JSON.stringify(cartItems));
-         localStorage.setItems("favorites",
+         localStorage.setItem("favorites",
           JSON.stringify(favoriteItems));
 
           showMsg('${name} deleted!')
