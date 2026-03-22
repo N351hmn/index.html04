@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +18,10 @@
       body {
         font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; 
         background-color: rgb(253, 249, 184);
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-start;
+        padding: 20px;
       }
       .main { 
         width: 100%;
@@ -50,6 +55,55 @@
       .container a:hover {
          color: rgba(219, 206, 26, 0.815);
          text-shadow: 0 2px 3px darkgray;
+      }
+      .intro {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        cursor: pointer; 
+        background-color: white;
+        box-shadow: 0 2px 3px 2px gray;
+        border: none;
+        border-radius: 10px;
+      }
+      .intro:hover {
+        background-color: whitesmoke;
+        box-shadow: 0 4px 3px 3px gray;
+        transform: scale(1.1);
+      }
+      .intro:active {
+        background-color: lightgray;
+      }
+      .intro-box {
+        position: fixed;
+        top: 120px;
+        right: 10px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: 0.3s ease;
+        pointer-events: none;
+        text-align: right;
+      }
+      .intro-box.active {
+        pointer-events: auto;
+        transform: translateY(0);
+        opacity: 1;
+      }
+      h3 {  
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+      }
+      input {
+        display: block;
+        width: 200px;
+        padding: 5px 15px;
+        margin: 8px;
+        background-color: azure;
+        font-weight: bold;
+        border: 2px solid black;
+        border-radius: 5px;
       }
       .shop-layout button, 
       .favorites button,
@@ -419,6 +473,16 @@
     <br><br>
     <br><br>
      
+    <button class="intro" onclick="toggleIntro()">👤🖋️</button>
+    <div class="intro-box" id="introBox">
+    <h3>Introduction</h3>
+    <form onsubmit="checkPassword(); return false;">
+    <input class="name" type="text" name="text" placeholder="Enter Your Name..">
+    <input class="password" type="password" placeholder="Enter Your Password.." maxlength="8">
+    <button onclick="checkPassword()">Submit</button>
+    </form>
+    </div>
+
     <div class="buttons">
      <div class="shop-layout">
       <button>🛒<span id="total">$0</span>
@@ -659,7 +723,7 @@
       <img src="couples1.jpg" alt="couples">
        <button onclick="addToCart('2 Green Hoodies', 175)">🛒</button>
        <button onclick="addToFavorite('2 Green Hoodies', 175)">♥️</button>
-<button onclick="deletedItem('2 Green Hoodies', 175)">🗑</button>
+       <button onclick="deletedItem('2 Green Hoodies', 175)">🗑</button>
     </div>
     <div id="couples2">
         <h2>2 Green & Gray Hoodies $160 </h2>
@@ -734,13 +798,33 @@
     </div>
 
     <script>
+
+      function toggleIntro() {
+        let box = document.getElementById("introBox");
+        box.classList.toggle("active");
+      }
       
+      function checkPassword() {
+        let password =
+       document.querySelector(".password").value;
+      
+      if(password.length < 8) {
+        alert('only 8 characters allowed!');
+        return;
+      }
+      alert("Login Success ✅")
+
+      let box = document.getElementById("introBox");
+      box.classList.remove("active");
+    }
+
+
       let cartTotal = 0;
       let favTotal= 0;
       let deletedTotal = 0;
 
-      let cartItem = [];
-      let favoriteItem = [];
+      let cartItems = [];
+      let favoriteItems = [];
 
       function showMsg(msg) {
         const box = 
@@ -759,10 +843,15 @@
     }
 
        function addToCart(name, price) {
-        cartTotal += price;
+        cartItems.push({ name, price});
+
+        cartTotal = cartItems.reduce((sum, item) => sum
+      + item.price, 0);
+
         document.getElementById("total").innerText = "$" 
         + cartTotal;
-        showMsg(name + " aded to cart!");
+
+        showMsg(`${name} " added to cart!"`);
         
       }
 
@@ -772,37 +861,43 @@
 
         document.getElementById("total-fav").innerText =
         favTotal;
-         showMsg(name + " aded to favorites!");
+         showMsg(`${name} " added to favorites!"`);
         
       }
 
       function removeFromFavorite(name) {
-        functionItem = favoriteItems.filter(item =>
-          item.name !== name);
+        favoriteItems = favoriteItems.filter(item =>
+          item !== name);
           favTotal = favoriteItems.length;
           document.getElementById("total-fav").innerText
           = favTotal;
-          showMsg('${name} removed from favorites!')
+          showMsg(`${name} " removed from favorites!"`)
       }
-     function deltedItem(name) {
+     function deletedItem(name) {
+
        cartItems = cartItems.filter(item =>
         item.name !== name);
-        cartTotal = cartItems.length;
+
+        cartTotal = cartItems.reduce((sum, item) => sum
+        + item.price, 0);
+
         document.getElementById("total").innerText =
          "$" + cartTotal;
 
          favoriteItems = favoriteItems.filter(item =>
-          item.name !== name);
-          favTotal = favItems.length;
+          item !== name);
+
+          favTotal = favoriteItems.length;
+
           document.getElementById("total-fav").innerText 
           = favTotal;
 
-          deletedTotal += 1;
+          deletedTotal++;
 
           document.getElementById("total-deleted").innerText
           = deletedTotal;
 
-          showMsg('${name} deleted!')
+          showMsg(`${name} " deleted!"`)
               }
 
       
@@ -865,7 +960,7 @@
 
         const sliders =
          document.querySelectorAll(".slider-track")
-[3/19/2026 1:32 AM] Nada Hamdy: function slideRight(btn) {
+      function slideRight(btn) {
           const track = 
           btn.parentElement.querySelector(".slider-track")
           track.scrollLeft += 300
@@ -895,6 +990,7 @@
 
           }, 3000)
 
+
           function showProduct(sectionClass, id, event) {
             if(event) event.preventDefault();
 
@@ -916,20 +1012,6 @@
             document.getElementById(id).style.display = 
             "block";
           }
-
-
-function fakeSignUp() {
-  let name = document.getElementById('signup-name').value;
-  let email = document.getElementById('signup-email').value;
-  let pass = document.getElementById('signup-password').value;
-
-  if (name && email && pass) {
-    document.getElementById('signup-message').innerText = 'Account created successfully!';
-  } else {
-    alert('Please fill all fields');
-  }
-}
-
 
     </script>
 </body>
