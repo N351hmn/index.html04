@@ -1,13 +1,3 @@
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.H</title>
-</head>
-<body>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,8 +110,23 @@
 
       }
       .submit:active {
-        background-color: lightgray;
-        
+        background-color: lightgray; 
+      }
+      .logout {
+        padding: 10px 20px;
+        cursor: pointer; 
+        background-color: rgb(243, 132, 132);
+        box-shadow: 0 2px 3px 2px gray;
+        border: none;
+        border-radius: 10px;
+      }
+      .logout:hover {
+         background-color: rgb(240, 101, 101);
+        box-shadow: 0 4px 3px 3px gray;
+        transform: scale(1.1);
+      }
+      .logout:active {
+        background-color: rgb(247, 61, 61); 
       }
       .shop-layout button, 
       .favorites button,
@@ -528,16 +533,15 @@
             <a href="#contact-us" onclick="showMainSection('contact-us', event)">Contact Us</a>
         </ul>
      </nav>
-    <br><br>
-    <br><br>
-     
+    
     <button class="intro" onclick="toggleIntro()">👤🖋️</button>
     <div class="intro-box" id="introBox">
     <h3>Introduction</h3>
     <form onsubmit="checkPassword(); return false;">
     <input class="name" type="text" name="text" placeholder="Enter Your Name..">
     <input class="password" type="password" placeholder="Enter Your Password.." maxlength="8">
-    <button class="submit" onclick="checkPassword()">Submit</button>
+    <button class="submit" type="submit">Submit</button>
+    <button class="logout" type="logout" onclick="logoutUser()">Logout</button>
     </form>
     </div>
 
@@ -555,6 +559,15 @@
       </button>
      </div>
     </div>
+
+    <div id="cartList">
+      <ul id="userCartList" style="display: none;"></ul>
+    </div>
+    <div id="favList">
+      <ul id="userFavList" style="display: none;"></ul>
+    </div>
+<br><br>
+
 <h1>S.H</h1>
     <p>Diffrent defination for the sports outfit</p>
 <br>
@@ -701,6 +714,7 @@
     <a href="https://web.facebook.com/?_rdc=1&_rdr#"><img src="facebook.png" alt="facebook logo"></a>
     <a href="https://www.instagram.com/"><img src="instagram.png" alt="instagarm logo"></a>
 </section>
+
 <section class="sections1">
     <div id="hoody1">
       <h2>Green Hoodie with BROOKLYN Word $15</h2>
@@ -862,7 +876,7 @@
         box.classList.toggle("active");
       }
       
-     function checkPassword() {
+      function checkPassword() {
         let name = 
        document.querySelector(".name").value;
         let password =
@@ -896,10 +910,8 @@
 
       showUser();
 
-      let box = document.getElementById("introBox");
-      box.classList.remove("active");
-    }
       };
+      
 
     function showUser() {
       let user =
@@ -912,6 +924,7 @@
         btn.innerText = "👤🖋";
       }
     }
+  }
 
     window.onload = function() {
       showUser();
@@ -944,12 +957,6 @@
     function logoutUser() {
       localStorage.removeItem("user");
 
-      cartItems = [];
-      favoriteItems = [];
-      cartTotal = 0;
-      favTotal = 0;
-      deletedTotal = 0;
-
       document.getElementById("total").innerText = 
       "$0";
 
@@ -965,17 +972,13 @@
       document.getElementById("logoutBtn");
 
       if (logoutBtn) logoutBtn.remove();
-      
+
       showMsg("Logged out Succcessfully!");
     }
-
 
       let cartTotal = 0;
       let favTotal= 0;
       let deletedTotal = 0;
-
-      let cartItems = [];
-      let favoriteItems = [];
 
       function showMsg(msg) {
         const box = 
@@ -994,66 +997,117 @@
     }
 
        function addToCart(name, price) {
-        cartItems.push({ name, price});
+        let user =
+        JSON.parse(localStorage.getItem("user"));
 
-        cartTotal = cartItems.reduce((sum, item) => sum
-      + item.price, 0);
+        if (!user) {
+          alert("Please Login First!");
+          return;
+        }
+
+        user.cart.push({ name, price});
+
+        localStorage.setItem("user", JSON.stringify(user))
 
         document.getElementById("total").innerText = "$" 
-        + cartTotal;
+        + user.cart.reduce((sum, item) => sum
+      + item.price, 0);
 
-        showMsg(`${name} " added to cart!"`);
+        showMsg(`${name} added to cart!`);
         
       }
 
-      function addToFavorite(name) {
+      function addToFavorite(name, price) {
+        let user = 
+        JSON.parse(localStorage.getItem("user"));
 
-        favTotal++;
+        if (!user) {
+          alert("Please Login First!");
+          return;
+        }
+
+        if (!user.favorites.some(item => item.name ===
+          name)) {
+                   user.favorites.push({ name, price});
+                   localStorage.setItem("user", 
+          JSON.stringify(user));
+          }
 
         document.getElementById("total-fav").innerText =
-        favTotal;
-         showMsg(`${name} " added to favorites!"`);
+        user.favorites.length;
+
+         showMsg(`${name} added to favorites!`);
         
       }
 
       function removeFromFavorite(name) {
-        favoriteItems = favoriteItems.filter(item =>
-          item !== name);
-          favTotal = favoriteItems.length;
+        let user =
+        JSON.parse(localStorage.getItem("user"));
+
+        if(!user) return;
+
+        user.favorites = user.favorites.filter(item =>
+          item.name !== name);
+          localStorage.setItem("user",
+        JSON.stringify(user));
+ 
           document.getElementById("total-fav").innerText
-          = favTotal;
-          showMsg(`${name} " removed from favorites!"`)
+          = user.favorites.length;
+
+          showMsg(`${name} removed from favorites!`)
       }
-     function deletedItem(name) {
 
-       cartItems = cartItems.filter(item =>
-        item.name !== name);
+      function removeFromCart(name) {
+        let user =
+        JSON.parse(localStorage.getItem("user"));
+        if(!user) return;
 
-        cartTotal = cartItems.reduce((sum, item) => sum
+        user.cart = user.cart.filter(item => item.name
+          !== name);
+          localStorage.setItem("user", JSON.stringify(user));
+
+          document.getElementById("total").innerText =
+          "$" + user.cart.reduce((sum, item) => sum
         + item.price, 0);
+        showMsg(`${name} removed from Cart!`);
+      }
+
+     function deletedItem(name) {
+      let user =
+      JSON.parse(localStorage.getItem("user"));
+
+      if (!user) {
+        alert("Please Login First!");
+        return;
+      }
+
+       user.cart = user.cart.filter(item => item.name !== 
+     name);
+
+       user.favorites = user.favorites.filter(item =>
+     item.name !== name);
+
+          localStorage.setItem("user", JSON.stringify(user));
+          
 
         document.getElementById("total").innerText =
-         "$" + cartTotal;
-
-         favoriteItems = favoriteItems.filter(item =>
-          item !== name);
-
-          favTotal = favoriteItems.length;
+         "$" + user.cart.reduce((sum, item) => sum
+     + item.price, 0);
 
           document.getElementById("total-fav").innerText 
-          = favTotal;
+          = user.favorites.length;
 
           deletedTotal++;
 
-          document.getElementById("total-deleted").innerText
-          = deletedTotal;
+     document.getElementById("total-deleted").innerText
+          = 
+          deletedTotal;
 
-          showMsg(`${name} " deleted!"`)
+          showMsg(`${name} deleted!`)
               }
 
-      
 
-      let lastScroll = 0
+    let lastScroll = 0
       const nav = document.querySelector(".container")
 
       window.addEventListener("scroll", () => {
