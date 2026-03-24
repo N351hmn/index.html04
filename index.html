@@ -874,12 +874,15 @@
        }
 
       if(password.length < 8) {
-        alert('only 8 characters allowed!');
+        alert('Password only 8 characters allowed!');
         return;
       }
 
+      let user =
+      JSON.parse(localStorage.getItem("user"));
+
       if(!user) {
-      let user = {
+       user = {
         name: name,
         cart: [],
         favorites: []
@@ -901,37 +904,46 @@
     function showUser() {
       let user =
       JSON.parse(localStorage.getItem("user"));
+      let btn = document.querySelector(".intro");
 
       if(user) {
-        let btn =
-        document.querySelector(".intro");
         btn.innerText = "👋" + user.name;
+      } else {
+        btn.innerText = "👤🖋";
       }
     }
 
     window.onload = function() {
       showUser();
 
+      let user =
+      JSON.parse(localStorage.getItem("user"));
+      let btn = document.querySelector(".intro");
+
+     if (user) {
       if(!document.getElementById("logoutBtn")) {
         const logoutBtn = 
         document.createElement("button");
         logoutBtn.id = "logoutBtn";
         logoutBtn.innerText = "Logout";
         logoutBtn.onclick = logoutUser;
+
         btn.parentElement.appendChild(logoutBtn);
+      }
 
       showUserCart(user);
-      showUservorites(user);
+      showUserFavorites(user);
+
     } else {
-      btn.innerText = "👤🖋";
       const logoutBtn = 
       document.getElementById("logoutBtn");
       if(logoutBtn) logoutBtn.remove();
     }
-  }
+  };
 
     function logoutUser() {
       localStorage.removeItem("user");
+
       cartItems = [];
       favoriteItems = [];
       cartTotal = 0;
@@ -948,6 +960,12 @@
       "0";
 
       showUser();
+
+      const logoutBtn =
+      document.getElementById("logoutBtn");
+
+      if (logoutBtn) logoutBtn.remove();
+      
       showMsg("Logged out Succcessfully!");
     }
 
