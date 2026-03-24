@@ -862,18 +862,93 @@
         box.classList.toggle("active");
       }
       
-      function checkPassword() {
+     function checkPassword() {
+        let name = 
+       document.querySelector(".name").value;
         let password =
        document.querySelector(".password").value;
       
+       if(name === "") {
+        alert("Enter your name!");
+        return;
+       }
+
       if(password.length < 8) {
         alert('only 8 characters allowed!');
         return;
       }
-      alert("Login Success ✅")
+
+      if(!user) {
+      let user = {
+        name: name,
+        cart: [],
+        favorites: []
+      };
+
+      localStorage.setItem("user", JSON.stringify(user));
+
+      alert("Login Success ✅");
+
+      document.getElementById("introBox").classList.remove("active");
+
+      showUser();
 
       let box = document.getElementById("introBox");
       box.classList.remove("active");
+    }
+      };
+
+    function showUser() {
+      let user =
+      JSON.parse(localStorage.getItem("user"));
+
+      if(user) {
+        let btn =
+        document.querySelector(".intro");
+        btn.innerText = "👋" + user.name;
+      }
+    }
+
+    window.onload = function() {
+      showUser();
+
+      if(!document.getElementById("logoutBtn")) {
+        const logoutBtn = 
+        document.createElement("button");
+        logoutBtn.id = "logoutBtn";
+        logoutBtn.innerText = "Logout";
+        logoutBtn.onclick = logoutUser;
+        btn.parentElement.appendChild(logoutBtn);
+
+      showUserCart(user);
+      showUservorites(user);
+    } else {
+      btn.innerText = "👤🖋";
+      const logoutBtn = 
+      document.getElementById("logoutBtn");
+      if(logoutBtn) logoutBtn.remove();
+    }
+  }
+
+    function logoutUser() {
+      localStorage.removeItem("user");
+      cartItems = [];
+      favoriteItems = [];
+      cartTotal = 0;
+      favTotal = 0;
+      deletedTotal = 0;
+
+      document.getElementById("total").innerText = 
+      "$0";
+
+      document.getElementById("total-fav").innerText =
+      "0";
+
+      document.getElementById("total-deleted").innerText =
+      "0";
+
+      showUser();
+      showMsg("Logged out Succcessfully!");
     }
 
 
