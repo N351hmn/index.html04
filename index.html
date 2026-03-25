@@ -1088,11 +1088,26 @@
         return;
       }
 
+       let cartLengthBefore = user.cart.length;
+      let favLengthBefore = user.favorites.length;
+
        user.cart = user.cart.filter(item => item.name !== 
      name);
 
        user.favorites = user.favorites.filter(item =>
      item.name !== name);
+
+      let cartLengthAfter = user.cart.length;
+      let favLengthAfter = user.favorites.length;
+
+      if(
+        cartLengthBefore === cartLengthAfter &&
+        favLengthBefore === favLengthAfter
+      ) {
+        alert("Item not found ❌");
+        return;
+      }
+
 
           localStorage.setItem("user", JSON.stringify(user));
           
@@ -1200,7 +1215,7 @@
           })
         })
 
-          }, 3000)
+          }, 2500)
 
 
           function showProduct(sectionClass, id, event) {
