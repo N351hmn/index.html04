@@ -224,7 +224,7 @@
         display: none;
       }
       .slide {
-        width: 40%;
+        width: 50%;
         margin-right: 20px;
         text-align: center;
         flex-shrink: 0;
@@ -381,7 +381,7 @@
                 display: inline-block;
             }
             section {
-                width: 95%;
+                width: 100%;
                 margin: 10px auto;
                 padding: 10px 5px;
             }
@@ -911,8 +911,10 @@
 
       showUser();
 
-      };
-      
+      document.querySelector(".logout").style.display =
+      "block";
+      }
+    }
 
     function showUser() {
       let user =
@@ -925,37 +927,19 @@
         btn.innerText = "👤🖋";
       }
     }
+
+
+  function bindLogoutButton() {
+    const logoutBtn =
+    document.querySelector(".logout");
+
+    if (logoutBtn) {
+      logoutBtn.onclick = logoutUser;
+    }
   }
 
-    window.onload = function() {
-      showUser();
-
-      let user =
-      JSON.parse(localStorage.getItem("user"));
-      let btn = document.querySelector(".intro");
-
-     if (user) {
-      if(!document.getElementById("logoutBtn")) {
-        const logoutBtn = 
-        document.createElement("button");
-        logoutBtn.id = "logoutBtn";
-        logoutBtn.innerText = "Logout";
-        logoutBtn.onclick = logoutUser;
-
-        btn.parentElement.appendChild(logoutBtn);
-      }
-
-      showUserCart(user);
-      showUserFavorites(user);
-
-    } else {
-      const logoutBtn = 
-      document.getElementById("logoutBtn");
-      if(logoutBtn) logoutBtn.remove();
-    }
-  };
-
     function logoutUser() {
+
       localStorage.removeItem("user");
 
       document.getElementById("total").innerText = 
@@ -968,14 +952,36 @@
       "0";
 
       showUser();
+      alert("Logged out Successfully!");
 
       const logoutBtn =
-      document.getElementById("logoutBtn");
-
-      if (logoutBtn) logoutBtn.remove();
-
-      showMsg("Logged out Succcessfully!");
+      document.querySelector(".logout");
+      if(logoutBtn) {
+        logoutBtn.style.display = "none";
+      }
     }
+
+    window.onload = function() {
+      showUser();
+      bindLogoutButton();
+
+      const user =
+      JSON.parse(localStorage.getItem("user"));
+
+        if (user) {
+        showUserCart(user);
+        showUserFavorites(user);
+      } 
+
+      const logoutBtn =
+      document.querySelector(".logout");
+
+      if(!user && logoutBtn) {
+        logoutBtn.style.display = "none";
+      } else if (user && logoutBtn){
+        logoutBtn.style.display = "block";
+      }
+    };
 
       let cartTotal = 0;
       let favTotal= 0;
