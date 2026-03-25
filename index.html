@@ -224,7 +224,7 @@
         display: none;
       }
       .slide {
-        width: 50%;
+        width: 70%;
         margin-right: 20px;
         text-align: center;
         flex-shrink: 0;
@@ -864,7 +864,12 @@
        <button onclick="deletedItem('Dark Green Sweatshirt', 118)">🗑</button>
     </div>
     </section>
-    <div id="notification"></div>
+    <div id="notification" style="color: darkred; 
+    font-weight: bold; bottom: 20px; display: none;">
+    <div id="cart-item"></div>
+    <div id="fav-items"></div>
+    </div>
+    
 
 
 <div id="copy">© Vanini</div>
@@ -875,6 +880,18 @@
       function toggleIntro() {
         let box = document.getElementById("introBox");
         box.classList.toggle("active");
+      }
+
+       function updateTotal(user) {
+        document.getElementById("total").innerText = 
+        "$" + user.cart.reduce((sum, item) => sum +
+      item.price, 0);
+
+      document.getElementById("total-fav").innerText =
+      user.favorites.length;
+
+      document.getElementById("total-deleted").innerText =
+      deletedTotal;
       }
       
       function checkPassword() {
@@ -968,24 +985,50 @@
       const user =
       JSON.parse(localStorage.getItem("user"));
 
+       const logoutBtn =
+      document.querySelector(".logout");
+
         if (user) {
         showUserCart(user);
         showUserFavorites(user);
-      } 
 
-      const logoutBtn =
-      document.querySelector(".logout");
 
-      if(!user && logoutBtn) {
-        logoutBtn.style.display = "none";
-      } else if (user && logoutBtn){
-        logoutBtn.style.display = "block";
-      }
-    };
+      document.getElementById("total").innerText =
+      "$" + user.cart.reduce((sum, item) => sum +
+    item.price, 0);
 
+    document.getElementById("total-fav").innerText
+    =
+    user.favorites.length;
+
+    document.getElementById("total-deleted").innerText
+    =
+    deletedTotal;
+
+      if (logoutBtn) logoutBtn.style.display = 
+      "block";
+
+    } else { 
+
+      document.getElementById("total").innerText = 
+  "$0";
+
+      document.getElementById("total-fav").innerText 
+  ="0";
+
+      document.getElementById("total-deleted").innerText =
+      deletedTotal;
+
+      if (logoutBtn) logoutBtn.style.display = "none";
+    } 
+  };
+  
       let cartTotal = 0;
       let favTotal= 0;
-      let deletedTotal = 0;
+      let deletedTotal = 
+          localStorage.getItem("deletedTotal")
+          ?  parseInt(localStorage.getItem("deletedTotal"))
+          : 0;
 
       function showMsg(msg) {
         const box = 
@@ -1004,7 +1047,7 @@
     }
 
        function addToCart(name, price) {
-        let user =
+        const user =
         JSON.parse(localStorage.getItem("user"));
 
         if (!user) {
@@ -1014,13 +1057,17 @@
 
         user.cart.push({ name, price});
 
-        localStorage.setItem("user", JSON.stringify(user))
+        localStorage.setItem("user", JSON.stringify(user));
+
+        showMsg(`${name} added to Cart!`);
+
+        showUserCart(user);
 
         document.getElementById("total").innerText = "$" 
         + user.cart.reduce((sum, item) => sum
       + item.price, 0);
 
-        showMsg(`${name} added to cart!`);
+      
         
       }
 
@@ -1035,17 +1082,55 @@
 
         if (!user.favorites.some(item => item.name ===
           name)) {
-                   user.favorites.push({ name, price});
+                  
+            const exists = user.favorites.some(item =>
+              item.name === name);
+
+              if(!exists) {
+                 user.favorites.push({ name, price});
                    localStorage.setItem("user", 
           JSON.stringify(user));
           }
 
+          showMsg(`${name} added to Favorites!`);
+          showUserFavorites(user);
+
         document.getElementById("total-fav").innerText =
         user.favorites.length;
 
-         showMsg(`${name} added to favorites!`);
-        
+        document.getElementById("total-fav").innerText =
+        user.favorites.length;
+      } else {
+        showMsg(`${name} is already in Favorites
+        `);
+           }
       }
+
+       function showUserCart(user) {
+          const cartContainer =
+          document.getElementById("cart-item");
+          cartContainer.innerHTML = "";
+
+          user.cart.forEach(item => {
+            const div = document.createElement("div");
+            div.innerText = item.name + " - $" +
+            item.price;
+            cartContainer.appendChild(div);
+          });
+        }
+
+        function showUserFavorites(user) {
+          const favContainer = 
+          document.getElementById("fav-items");
+          favContainer.innerHTML = "";
+
+          user.favorites.forEach(item => {
+            const div = document.createElement("div");
+            div.innerText = item.name + " - $" +
+            item.price;
+            favContainer.appendChild(div);
+          });
+        }
 
       function removeFromFavorite(name) {
         let user =
@@ -1061,7 +1146,7 @@
           document.getElementById("total-fav").innerText
           = user.favorites.length;
 
-          showMsg(`${name} removed from favorites!`)
+          showMsg(`${name} removed from Favorites!`)
       }
 
       function removeFromCart(name) {
@@ -1088,7 +1173,7 @@
         return;
       }
 
-       let cartLengthBefore = user.cart.length;
+      let cartLengthBefore = user.cart.length;
       let favLengthBefore = user.favorites.length;
 
        user.cart = user.cart.filter(item => item.name !== 
@@ -1108,8 +1193,12 @@
         return;
       }
 
-
           localStorage.setItem("user", JSON.stringify(user));
+
+          deletedTotal++;
+
+          localStorage.setItem("deletedTotal",
+            deletedTotal);
           
 
         document.getElementById("total").innerText =
@@ -1119,7 +1208,6 @@
           document.getElementById("total-fav").innerText 
           = user.favorites.length;
 
-          deletedTotal++;
 
      document.getElementById("total-deleted").innerText
           = 
@@ -1190,13 +1278,13 @@
       function slideRight(btn) {
           const track = 
           btn.parentElement.querySelector(".slider-track")
-          track.scrollLeft += 300
+          track.scrollLeft += 500
         }
 
         function slideLeft(btn) {
           const track = 
           btn.parentElement.querySelector(".slider-track")
-          track.scrollLeft -= 300
+          track.scrollLeft -= 500
         }
 
         let direction = 1
@@ -1215,7 +1303,7 @@
           })
         })
 
-          }, 2500)
+          }, 3500)
 
 
           function showProduct(sectionClass, id, event) {
