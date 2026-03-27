@@ -182,6 +182,9 @@
       #full, #couples, #men, #about-us, #contact-us {
         display: none;
       }
+      .panel {
+        display: none;
+      }
       section {
         background-color: rgb(12, 3, 37);
         color: rgba(253, 242, 86, 0.952);
@@ -548,29 +551,35 @@
     <button class="logout" type="logout" onclick="logoutUser()">Logout</button>
     </div>
 
-    <div class="buttons">
+   <div class="buttons">
      <div class="shop-layout">
-      <button>🛒<span id="total">$0</span>
+      <button onclick="openCart()">🛒<span id="total">$0</span>
       </button>
       </div>
      <div class="favorites">
-      <button>♥️<span id="total-fav">0</span>
+      <button onclick="openFavorites()">♥️<span id="total-fav">0</span>
       </button>
      </div>
      <div class="delete">
-      <button>🗑<span id="total-deleted">0</span>
+      <button onclick="openDeleted()">🗑<span id="total-deleted">0</span>
       </button>
      </div>
     </div>
 
-    <div id="cartList">
-      <ul id="userCartList" style="display: none;"></ul>
+    <div id="cartPanel" class="panel">
+      <h3>Your Cart</h3>
+      <div id="cart-items"></div>
+      <button onclick="checkout()">Checkout</button>
+      <button onclick="closePanel()">Close ❌</button>
     </div>
-    <div id="favList">
-      <ul id="userFavList" style="display: none;"></ul>
+    <div id="favPanel" class="panel">
+      <h3>Your Favorites</h3>
+      <div id="fav-items"></div>
+      <button onclick="closePanel()">Close ❌</button>
     </div>
 <br><br>
 
+<div id="mainContent">
 <h1>S.H</h1>
     <p>Diffrent defination for the sports outfit</p>
 <br>
@@ -871,6 +880,7 @@
     <div id="cart-item"></div>
     <div id="fav-items"></div>
     </div>
+    </div>
     
 
 
@@ -882,18 +892,6 @@
       function toggleIntro() {
         let box = document.getElementById("introBox");
         box.classList.toggle("active");
-      }
-
-       function updateTotal(user) {
-        document.getElementById("total").innerText = 
-        "$" + user.cart.reduce((sum, item) => sum +
-      item.price, 0);
-
-      document.getElementById("total-fav").innerText =
-      user.favorites.length;
-
-      document.getElementById("total-deleted").innerText =
-      deletedTotal;
       }
       
       function checkPassword() {
@@ -1048,6 +1046,18 @@
       }
     }
 
+   function getUser() {
+      let user =
+      JSON.parse(localStorage.getItem("user"));
+
+      if(!user) return;
+
+      if(!user.cart) user.cart = [];
+        if(!user.favorites) user.favorites = [];
+
+        return user;
+    }
+
        function addToCart(name, price) {
         const user =
         JSON.parse(localStorage.getItem("user"));
@@ -1067,10 +1077,10 @@
 
         document.getElementById("total").innerText = "$" 
         + user.cart.reduce((sum, item) => sum
-      + item.price, 0);
+      + item.price, 0); 
 
-      
-        
+      user = getUser();
+
       }
 
       function addToFavorite(name, price) {
@@ -1082,35 +1092,117 @@
           return;
         }
 
-        if (!user.favorites.some(item => item.name ===
-          name)) {
-                  
             const exists = user.favorites.some(item =>
               item.name === name);
 
               if(!exists) {
                  user.favorites.push({ name, price});
-                   localStorage.setItem("user", 
+                   
+                 localStorage.setItem("user", 
           JSON.stringify(user));
-          }
 
           showMsg(`${name} added to Favorites!`);
+          } else {
+        showMsg(`${name} is already in Favorites
+        `);
+           }
           showUserFavorites(user);
 
         document.getElementById("total-fav").innerText =
         user.favorites.length;
 
-        document.getElementById("total-fav").innerText =
-        user.favorites.length;
-      } else {
-        showMsg(`${name} is already in Favorites
-        `);
-           }
+        user = getUser();
+
+      }
+
+      function openCart() {
+        document.getElementById("mainContent").style.display = "none";
+       
+        document.getElementById("favPanel").classList.remove("active");
+
+        document.querySelectorAll("section").forEach(sec => {
+          if(!sec.classList.contains("panel"))
+          sec.style.display = "none";
+        });
+
+        const user =
+        JSON.parse(localStorage.getItem("user"));
+        if (user) showUserCart(user);
+      }
+
+      function openFavorites() {
+        document.getElementById("favPanel").classList.add("active");
+
+        document.getElementById("cartPanel").classList.remove("active");
+
+        document.querySelectorAll("section").forEach(sec => {
+          sec.style.display = "none";
+        });
+
+        const user =
+        JSON.parse(localStorage.getItem("user"));
+        if (user) showUserFavorites(user);
+      }
+
+      function closePanel() {
+        document.getElementById("cartPanel").classList.remove("active");
+
+        document.getElementById("favPanel").classList.remove("active");
+
+        document.querySelectorAll("section").forEach(sec => {
+          sec.style.display = "flex";
+        });
+      }
+
+        function showUserFavorites(user) {
+          const favContainer = 
+          document.getElementById("fav-items");
+          if(!favContainer) return;
+          
+          favContainer.innerHTML = "";
+
+          user.favorites.forEach(item => {
+            const div = document.createElement("div");
+            div.innerText = `${item.name} - $${item.price}`;
+            favContainer.appendChild(div);
+          });
+        }
+
+      function checkout() {
+        const user =
+        JSON.parse(localStorage.getItem("user"));
+
+        if(!user || user.cart.length === 0) {
+          alert("Cart id empty!");
+          return;
+        }
+
+        const pass = prompt ("Enter password to confirm: ");
+
+        if(!pass || pass.length < 4) {
+          alert("Wrong password!");
+          return;
+        }
+
+        showMsg("Processing order...");
+
+        setTimeout(() => {
+          user.cart = [];
+          localStorage.setItem("user", JSON.stringify(user));
+          showUserCart(user);
+          document.getElementById("total").innerText =
+          "$0";
+
+          alert("Order Successful! ✅");
+
+        }, 2000);
       }
 
        function showUserCart(user) {
           const cartContainer =
-          document.getElementById("cart-item");
+          document.getElementById("cart-items");
+          if(!cartContainer) return;
+
           cartContainer.innerHTML = "";
 
           user.cart.forEach(item => {
@@ -1124,6 +1216,8 @@
         function showUserFavorites(user) {
           const favContainer = 
           document.getElementById("fav-items");
+          if(!favContainer) return;
+          
           favContainer.innerHTML = "";
 
           user.favorites.forEach(item => {
@@ -1217,6 +1311,7 @@
 
           showMsg(`${name} deleted!`)
               }
+
 
 
     let lastScroll = 0
