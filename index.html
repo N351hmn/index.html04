@@ -572,8 +572,7 @@
         <ul>
           <a href="#menu" onclick="showMainSection('menu', event)">Menu</a>
           <a href="#about-us" onclick="showMainSection('about-us', event)"
-            >About Us</a
-          >
+            >About Us</a>
           <a href="#contact-us" onclick="showMainSection('contact-us', event)"
             >Contact Us</a
           >
@@ -1224,10 +1223,7 @@
             <button
               onclick="
                 addToFavorite('2 Green & Gray Hoodies', 160, 'couples2.jfif')
-              "
-            >
-              ♥️
-            </button>
+              ">♥️</button>
             <button onclick="deletedItem('2 Green & Gray Hoodies', 160)">
               🗑
             </button>
@@ -1523,39 +1519,55 @@
           alert(msg);
         }
       }
+    function getUser() {
+    let user = JSON.parse(localStorage.getItem("user"));
+    
+    if (!user) {
+        return { name: "", cart: [], favorites: [], deleted: [] };
+    }
 
-      function addToCart(name, price) {
-        const user = getUser();
+    user.cart = user.cart || [];
+    user.favorites = user.favorites || [];
+    user.deleted = user.deleted || [];
 
-        if (!user) {
-          alert("Please Login First!");
-          return;
-        }
+    return user;
+}
 
-        user.cart.push({ name, price });
+     function addToCart(name, price, img) {
+    const user = getUser();
 
-        localStorage.setItem("user", JSON.stringify(user));
+    if (!user || !user.name) {
+        alert("Please Login First!");
+        return;
+    }
 
-        showMsg(`${name} added to Cart!`);
+    user.cart.push({ 
+        name: name, 
+        price: price, 
+        img: img 
+    }); 
 
-        showUserCart(user);
+    localStorage.setItem("user", JSON.stringify(user));
 
-        document.getElementById("total").innerText =
-          "$" + user.cart.reduce((sum, item) => sum + item.price, 0);
-      }
+    const totalElement = document.getElementById("total");
+    if (totalElement) {
+        const totalSum = user.cart.reduce((sum, item) => sum + Number(item.price), 0);
+        totalElement.innerText = "$" + totalSum.toFixed(2);
+    }
 
-      function getUser() {
-        let user = JSON.parse(localStorage.getItem("user"));
-        if (!user) {
-          return { name: "", cart: [], favorites: [], deleted: [] };
-        }
+    showMsg(`${name} added to Cart! ✅`);
+}
+function updateCartTotal() {
+    const user = getUser();
+    const totalElement = document.getElementById("total");
+    
+    if (totalElement) {
+        const totalSum = user.cart.reduce((sum, item) => sum + Number(item.price), 0);
+        totalElement.innerText = "$" + totalSum.toFixed(2);
+    }
+}
 
-        user.cart = user.cart || [];
-        user.favorites = user.favorites || [];
-        user.deleted = user.deleted || [];
-
-        return user;
-      }
+document.addEventListener("DOMContentLoaded", updateCartTotal);
 
       function addToFavorite(name, price, imgSrc) {
         let user = getUser();
@@ -1792,6 +1804,9 @@
       const menuSubsections = ["hoodies", "full", "couples", "men"];
 
       function showMainSection(id, event) {
+        if (event && typeof event.preventDefault === 'function') {
+        event.preventDefault();
+    }
         event.preventDefault();
 
         mainSections.forEach((section) => {
@@ -1871,6 +1886,7 @@
 
       updateFavoritesDisplay();
       updateFavoritesCounter();
+
     </script>
   </body>
 </html>
