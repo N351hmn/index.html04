@@ -3,18 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.H</title>
+    <title>S.H - Shopping Cart</title>
     <style>
+      /* --- COPIED DIRECTLY FROM YOUR FAVORITES UI --- */
       body {
-        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; 
+        font-family: 'Lucida Sans', Geneva, Verdana, sans-serif; 
         background-color: rgb(253, 249, 184);
-        display: flex;
-        justify-content: flex-end;
-        align-items: flex-start;
         padding: 20px;
-      }
-      .main { 
-        width: 100%;
+        margin: 0;
       }
       .container {
         background-color: rgb(82, 21, 21);
@@ -23,16 +19,14 @@
         left: 50%;
         transform: translateX(-50%);
         padding: 5px 15px;
-        box-sizing: border-box;
         width: 600px;
         border-radius: 10px;
         border: 2.5px solid black;
         box-shadow: 0 4px 7px 2px gray;
+        z-index: 1000;
+        height: 100px;
         text-align: center;
         transition: top 0.3s;
-      }
-      .container.hidden-bg {
-        background-color: rgba(82, 21, 21, 0);
       }
       .container a {
         color: rgba(253, 242, 86, 0.952);
@@ -40,97 +34,24 @@
         font-size: 25px;
         padding: 5px 15px;
         margin: 3px;
-        margin-bottom: 2px;
+        display: inline-block;
+        margin-top: 30px;
       }
       .container a:hover {
          color: rgba(219, 206, 26, 0.815);
          text-shadow: 0 2px 3px darkgray;
       }
-      .intro {
+      .buttons {
         position: fixed;
         top: 20px;
-        right: 20px;
-        padding: 10px 20px;
-        cursor: pointer; 
-        background-color: white;
-        box-shadow: 0 2px 3px 2px gray;
-        border: none;
-        border-radius: 10px;
+        left: 20px;
+        display: flex;
+        gap: 10px;
+        z-index: 1001;
       }
-      .intro:hover {
-        background-color: whitesmoke;
-        box-shadow: 0 4px 3px 3px gray;
-        transform: scale(1.1);
-      }
-      .intro:active {
-        background-color: lightgray;
-      }
-      .intro-box {
-        position: absolute;
-        top: 120px;
-        right: 10px;
-        opacity: 0;
-        transform: translateY(20px);
-        transition: 0.3s ease;
-        pointer-events: none;
-        text-align: right;
-      }
-      .intro-box.active {
-        pointer-events: auto;
-        transform: translateY(0);
-        opacity: 1;
-      }
-      h3 {  
-        font-weight: bold;
-        font-family: Arial, Helvetica, sans-serif;
-        margin: 0;
-      }
-      input {
-        display: block;
-        width: 200px;
-        padding: 5px 15px;
-        margin: 8px;
-        background-color: azure;
-        font-weight: bold;
-        border: 2px solid black;
-        border-radius: 5px;
-      }
-      .submit {
-        padding: 10px 20px;
-        cursor: pointer; 
-        background-color: white;
-        box-shadow: 0 2px 3px 2px gray;
-        border: none;
-        border-radius: 10px;
-      }
-      .submit:hover {
-        background-color: whitesmoke;
-        box-shadow: 0 4px 3px 3px gray;
-        transform: scale(1.1);
 
-      }
-      .submit:active {
-        background-color: lightgray; 
-      }
-      .logout {
-        padding: 10px 20px;
-        cursor: pointer; 
-        background-color: rgb(243, 132, 132);
-        box-shadow: 0 2px 3px 2px gray;
-        border: none;
-        border-radius: 10px;
-        margin-top: 5px;
-      }
-      .logout:hover {
-         background-color: rgb(240, 101, 101);
-        box-shadow: 0 4px 3px 3px gray;
-        transform: scale(1.1);
-      }
-      .logout:active {
-        background-color: rgb(247, 61, 61); 
-      }
-      .shop-layout button {
-        font-size: 24px;
+      .favorites button {
+         font-size: 24px;
         font-weight: bold;
         background-color: none;
         border: none;
@@ -145,602 +66,168 @@
         padding: 5px 10px;
         transition: transform 0.2s;
       }
-      .shop-layout button:hover {
+      .favorites button:hover {
         background-color: none;
         transform: scale(1.1);
       }
-      .shop-layout button:active {
-         background-color: none;
+      .favorites button:active {
+        background-color: none;
         transform: scale(0.95);
       }
-      .shop-layout button span {
-        min-width: 20px;
-        font-size: 16px;
-        font-weight: bold;
-        color: black;
-        background-color: rgba(253, 242, 86, 0.952);
-        padding: 2px 6px;
-        border-radius: 20px;
+      #cart-section {
+        padding: 40px 20px;
+        background-color: rgb(11, 11, 31); /* Your dark blue */
+        border-radius: 15px;
+        margin-top: 100px;
+        color: rgb(228, 218, 75); /* Your gold */
         text-align: center;
-        display: inline-block;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+        min-height: 400px;
+        border: 1px solid #ccc;
       }
-      h1, p {
-        text-align: center;
-        font-family: Verdana, Tahoma, sans-serif;
-      }
-        .sections1, .sections2,
-        .sections3, .sections4,
-        .sections5 {
-        background-color: rgb(4, 1, 10);
-        color: rgba(253, 242, 86, 0.952);
-        border-radius: 10px;
-        border: 2px solid black;
-        text-align: right;
-        margin: 10px;
-        display: none;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 30px;
+
+      .cart-items-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+        gap: 25px;
+        justify-items: center;
         padding: 20px;
-        margin: 15px;
-        height: 600px;
-        overflow-y: hidden;
-        overflow-x: hidden;
       }
-      .sections1 img, .sections2 img,
-      .sections3 img, .sections4 img,
-      .sections5 img {
-        width: 350px;
-        height: 350px;
-        border: 2px solid black;
+
+      .cart-item {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid rgba(253, 242, 86, 0.3);
+        transition: 0.3s;
+      }
+
+      .cart-item:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .cart-item img {
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
         border-radius: 5px;
-        box-shadow: 0 2px 4px 3px rgb(90, 88, 88);
-        left: 50px;
-        position: sticky;
-        flex-wrap: wrap;
-        box-sizing: border-box;
-        flex-shrink: 0;
         margin-bottom: 10px;
       }
-      .sections1 button, .sections2 button,
-      .sections3 button, .sections4 button,
-      .sections5 button {
-        background-color: rgba(255, 255, 255, 0.7);
-        border: 4px solid black;
-        border-radius: 10px;
-        font-size: 24px;
-        padding: 5px 10px;
-        cursor: pointer;
-        position: relative;
-        z-index: 1000;
-        margin: auto;
-      }
-      .sections1 button:hover, .sections2 button:hover,
-      .sections3 button:hover, .sections4 button:hover,
-      .sections5 button:hover {
-        background-color: rgba(204, 200, 200, 0.7);
-        border: 4px solid black;
-        box-shadow: 0 1px 2px 2px whitesmoke;
-      }
-      .sections1 button:active, .sections2 button:active,
-      .sections3 button:active, .sections4 button:active,
-      .sections5 button:active {
-        background-color: rgba(158, 156, 156, 0.7);
-        box-shadow: 0 1px 2px 2px whitesmoke;
-        border: 4px solid black;
-        border-radius: 5px;
-      }
-        #copy {
-       font-family: pacifico, dancing script, great vibes, 'allura', cursive, sans sarif;
-       font-size: 18px;
-       color: #c2a91e;
-       text-align: left;
-       text-shadow: 1px 2px 1px rgb(77, 10, 27);
-       transform: translateY(50px);
-        margin-top: 30px; 
-        }
-        @media (max-width: 900px) {
-            .container {
-                width: 90%;
-                padding: 8px 10px; 
-            }
-            .container a {
-                font-size: 18px;
-                padding: 5px 12px;
-            }
-            
-        }
-        @media (max-width: 600px) {
-            .container{
-                width: 95%;
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-                padding: 5px 5px;
-                margin-bottom: 10px; 
-            }
-            .container a {
-                font-size: 16px;
-                padding: 6px 8px;
-            }
-            .buttons {
-              display: relative;
-              top: auto;
-              bottom: 10px;
-              right: 10x;
-              left: auto;
-              background: rgba(255, 255, 255, 0.9);
-              border-radius: 40px;
-              padding: 8px 15px;
-              box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-              backdrop-filter: blur(5px);
-              display: flex;
-              justify-content: center;
-            }
-             .shop-layout button {
-              font-size: 28px;
-              padding: 5px;
-              margin: 5px;
-              top: 50px;
-            }
-            .shop-layout button span {
-              font-size: 14px;
-              min-width: 25px;
-              position: absolute;
-              top: -5px;
-              right: -5px;
-              background-color: rgb(253, 242, 86);
-              border: 1px solid black;
-            }
-            .shop-layout h2 {
-              margin: 0;
-              font-size: 18px;
-              line-height: 1;
-            }
-            h1 {
-              font-size: 28px;
-            }
-            p {
-              font-size: 14px;
-              padding: 0 10x;
-            }
-            .sections1, .sections2,
-            .sections3, .sections4,
-            .sections5 {
-              width: 95%;
-            }
-            .sections1 img, .sections2 img,
-            .sections3 img, .sections4 img,
-            .sections5 img {
-              width: 80vw;
-            }
-            .sections1 button, .sections2 button,
-            .sections3 button, .sections4 button,
-            .sections5 button {
-              cursor: pointer;
-              background-color: rgba(255, 255, 255, 0.7);
-              border: 2px solid black;
-              border-radius: 5px;
-              padding: 5px 10px;
-              position: relative;
-              margin-top: 20px;
-            }
-            .sections1 button:hover, .sections2 button:hover,
-            .sections3 button:hover, .sections4 button:hover,
-            .sections5 button:hover {
-              background-color: rgba(204, 200, 200, 0.7);
-              box-shadow: 0 1px 2px 2px whitesmoke;
-            }
-           .sections1 button:active, .sections2 button:active,
-           .sections3 button:active, .sections4 button:active,
-           .sections5 button:active {
-              background-color: rgba(158, 156, 156, 0.7);
-              box-shadow: 0 1px 2px 2px whitesmoke;
-              border: 2px solid black;
-              border-radius: 5px;
-            }
-            .intro {
-              position: fixed;
-              bottom: 20px;
-              right: 20px;
-              top: auto;
-              z-index: 1000;
-              padding: 8px 16px;
-              font-size: 18px;
-              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            }
-            .intro:hover {
-              transform: scale(1.05);
-            }
-            .intro-box { 
-              position: fixed;
-              bottom: 80px;
-              right: 20px;
-              top: auto;
-              left: auto;
-              background: white;
-              padding: 15px;
-              border-radius: 12px;
-              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-              width: 250px;
-              z-index: 1000;
-            }
-            .intro-box input {
-              width: 90%;
-              margin: 8px auto;
-              display: block;
-            }
-            .intro-box h3 {
-              text-align: center;
-              margin-bottom: 10px;
-            }
-            .submit {
-              width: 100%;
-              margin-top: 10px;
-            }
-            #copy {
-              font-size: 14px;
-              text-align: center;
-              transform: translateY(20px);
-            }
 
-        }
+      .total-area {
+        margin-top: 30px;
+        padding: 20px;
+        border-top: 2px solid rgba(253, 242, 86, 0.2);
+      }
+
+      .checkout-btn {
+        background-color: white;
+        border: 3px solid black;
+        padding: 10px 25px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 10px;
+        margin-top: 15px;
+      }
+
+      .checkout-btn:hover {
+        background-color: rgb(253, 242, 86);
+      }
     </style>
 </head>
 <body>
-    <div class="main">
-     <nav class="container">
-        <ul>
-            <a href="#menu" onclick="showMainSection('menu', event)">Menu</a>
-            <a href="#about-us" onclick="showMainSection('about-us', event)">About Us</a>
-            <a href="#contact-us" onclick="showMainSection('contact-us', event)">Contact Us</a>
-        </ul>
-     </nav>
-    <br><br>
-    
-    <button class="intro" onclick="toggleIntro()">👤🖋️</button>
-    <div class="intro-box" id="introBox">
-    <h3>Introduction</h3>
-    <form onsubmit="checkPassword(); return false;">
-    <input class="name" type="text" name="text" placeholder="Enter Your Name..">
-    <input class="password" type="password" placeholder="Enter Your Password.." maxlength="8">
-    <button class="submit" type="submit">Submit</button>
-    </form>
-    <button class="logout" type="logout" onclick="logoutUser()">Logout</button>
+
+    <div class="buttons">
+        <div class="favorites">
+            <button onclick="window.location.href='index.html'">🛒<span id="total">$0</span></button>
+        </div>
     </div>
 
-   <div class="buttons">
-     <div class="shop-layout">
-      <button onclick="window.location.href=`index.html`">🛒<span id="total">$0</span>
-      </button>
-      </div>
-    </div>
+    <nav class="container">
+        <a href="index.html">Menu</a>
+        <a href="index.html#about-us">About Us</a>
+        <a href="index.html#contact-us">Contact Us</a>
+    </nav>
 
-<div id="mainContent">
-<h1>S.H</h1>
-    <p>Diffrent defination for the sports outfit</p>
-<br>
-<section class="menu">
-<section class="sections1">
-    <div id="hoody1">
-      <h2>Green Hoodie with BROOKLYN Word $15</h2>
-       <img src="hoody1.jpg" alt="hoodies">
-       <button onclick="addToCart('Green Hoodie with BROOKLYN Word', 15)">🛒</button>
-      </div>
-    <div id="hoody2">
-      <h2>White & Purple Hoodie and BROOKLYN $17 </h2>
-      <img src="hoody2.jpg" alt="hoodies">
-       <button onclick="addToCart('White & Purple Hoodie and BROOKLYN', 17)">🛒</button>
-    </div>
-    <div id="hoody3">
-      <h2>Blue Hoodie $15 </h2>
-      <img src="hoody3.jpg" alt="hoodies">
-       <button onclick="addToCart('Blue Hoodie', 15)">🛒</button>
-    </div>
-    <div id="hoody4">
-      <h2>Green Hoodie $18 </h2>
-      <img src="hoody4.jpg" alt="hoodies">
-       <button onclick="addToCart('Green Hoodie', 18)">🛒</button>
-    </div>
-    <div id="hoody5">
-      <h2>Black Hoodie with a Painting from the behind $20 </h2>
-      <img src="hoody5.jpg" alt="hoodies">
-       <button onclick="addToCart('Black Hoodie with a Painting from the behind', 20)">🛒</button>
-    </div>
-    </section>
-  <section class="sections2">
-      <div id="full1">
-        <h2>Brown full suit $50 </h2>
-      <img src="full1.jfif" alt="full">
-       <button onclick="addToCart('Brown full suit', 50)">🛒</button>
-    </div>
-      <div id="full2">
-        <h2>Gray full suit with a word $75 </h2>
-      <img src="full2.jfif" alt="full">
-       <button onclick="addToCart('Gray full suit with a word', 75)">🛒</button>
-    </div>
-      <div id="full3">
-        <h2>Blue full suit with a word $75 </h2>
-      <img src="full3.jfif" alt="full">
-       <button onclick="addToCart('Blue full suit with a word', 75)">🛒</button>
-    </div>
-      <div id="full4">
-        <h2>Navy full suit with a moonlight word $80 </h2>
-      <img src="full4.jpg" alt="full">
-       <button onclick="addToCart('Navy full suit with a moonlight word', 80)">🛒</button>
-    </div>
-      <div id="full5">
-        <h2>Gray full suit with a word $85 </h2>
-      <img src="full5.jpg" alt="full">
-       <button onclick="addToCart('Gray full suit with a word', 85)">🛒</button>
-    </div>
-   </section>
-   <section class="sections3">
-    <div id="couples1">
-        <h2>2 Green Hoodies $175 </h2>
-      <img src="couples1.jpg" alt="couples">
-       <button onclick="addToCart('2 Green Hoodies', 175)">🛒</button>
-    </div>
-    <div id="couples2">
-        <h2>2 Green & Gray Hoodies $160 </h2>
-      <img src="couples2.jfif" alt="couples">
-       <button onclick="addToCart('2 Green & Gray Hoodies', 160)">🛒</button>
-    </div>
-    <div id="couples3">
-        <h2>2 Beige & Darkgreen Hoodies $185 </h2>
-      <img src="couples3.jfif" alt="couples">
-       <button onclick="addToCart('2 Beige & Darkgreen Hoodies', 185)">🛒</button>
-    </div>
-    <div id="couples4">
-        <h2>2 White & Green Hoodies $187 </h2>
-      <img src="couples4.jpg" alt="couples">
-       <button onclick="addToCart('2 White & Green Hoodies', 187)">🛒</button>
-    </div>
-    <div id="couples5">
-        <h2>2 Black & Purple with Draw in Back $218 </h2>
-      <img src="couples5.webp" alt="couples">
-       <button onclick="addToCart('2 Black & Purple with Draw in Back', 218)">🛒</button>
-    </div>
-    </section>
-   <section class="sections4">
-    <div id="men1">
-        <h2>Full White with Golden lines suit $182 </h2>
-      <img src="men1.jfif" alt="men">
-       <button onclick="addToCart('Full White with Golden lines suit', 182)">🛒</button>
-    </div>
-    <div id="men2">
-        <h2>Full Black suit $112 </h2>
-      <img src="men2.jpg" alt="men">
-       <button onclick="addToCart('Full Black suit', 112)">🛒</button>
-    </div>
-    <div id="men3">
-        <h2>Dark Brown Full suit $158 </h2>
-      <img src="men3.jfif" alt="men">
-       <button onclick="addToCart('Dark Brown Full suit', 158)">🛒</button>
-    </div>
-    <div id="men4">
-        <h2>Black Hoodie with Drawings $190</h2>
-      <img src="men4.jpg" alt="men">
-       <button onclick="addToCart('Black Hoodie with Drawings', 190)">🛒</button>
-    </div>
-    <div id="men5">
-        <h2>Dark Green Sweatshirt $118 </h2>
-      <img src="men5.jpg" alt="men">
-       <button onclick="addToCart('Dark Green Sweatshirt', 118)">🛒</button>
-    </div>
-    </section>
-    </div>
-
-<div id="copy">© Vanini</div>
+    <div id="cart-section">
+        <h2>Your Shopping Cart 🛒</h2>
+        <div id="cart-items" class="cart-items-container">
+            </div>
+        
+        <div class="total-area">
+            <h3>Total: $<span id="cart-total-price">0</span></h3>
+            <button class="checkout-btn" onclick="confirmPurchase()">Confirm Purchase ✅</button>
+        </div>
     </div>
 
     <script>
+    function getUser() {
+    let user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return { name: "Guest", cart: [], favorites: [] };
+    return user;
+}
 
-      function toggleIntro() {
-        let box = document.getElementById("introBox");
-        box.classList.toggle("active");
-      }
-      
-      document.addEventListener('DOMContentLoaded', function() {
-
+    function loadCart() {
+    const user = getUser();
+    const container = document.getElementById("cart-items");
+    const totalDisplay = document.getElementById("cart-total-price");
     
-    const user = JSON.parse(localStorage.getItem("user"));
+    if (!container) return;
+    container.innerHTML = "";
 
-    if(!user) {
-        alert("Please login first from the main page");
-        window.location.href = "index.html"; 
+    if (!user.cart || user.cart.length === 0) {
+        container.innerHTML = "<p style='opacity:0.7; grid-column: 1/-1;'>Your cart is empty!</p>";
+        totalDisplay.innerText = "0";
         return;
     }
 
-   
-    console.log("User loaded automatically: " + user.name);
+    let total = 0;
+    user.cart.forEach((item, index) => {
+        total += item.price;
+        
+        // If no image was saved, use a placeholder
+        const resolvedImg = item.img || getFavoriteImage(item.name, item.price); 
 
-    showUser();
-    document.querySelector(".logout").style.display = "block";
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+            <img src="${resolvedImg}" alt="${item.name}">
+            <p>${item.name} - $${item.price}</p>
+            <button onclick="removeFromCart(${index})" 
+                style="background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                Remove
+            </button>
+        `;
+        container.appendChild(div);
+    });
+    totalDisplay.innerText = total;
+}
 
-});
+function removeFromCart(index) {
+    let user = getUser();
+    user.cart.splice(index, 1);
+    localStorage.setItem("user", JSON.stringify(user));
+    loadCart();
+}
 
-    function showUser() {
-      let user =
-      JSON.parse(localStorage.getItem("user"));
-      let btn = document.querySelector(".intro");
-
-      if(user) {
-        btn.innerText = "👋" + user.name;
-      } else {
-        btn.innerText = "👤🖋";
-      }
+function confirmPurchase() {
+    let user = getUser();
+    if (!user.cart || user.cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
     }
+    alert("Thank you for your purchase!");
+    user.cart = [];
+    localStorage.setItem("user", JSON.stringify(user));
+    window.location.href = "index.html";
+}
 
-
-  function bindLogoutButton() {
-    const logoutBtn =
-    document.querySelector(".logout");
-
-    if (logoutBtn) {
-      logoutBtn.onclick = logoutUser;
-    }
-  }
-
-    function logoutUser() {
-
-      localStorage.removeItem("user");
-
-      document.getElementById("total").innerText = 
-      "$0";
-
-      document.getElementById("total-fav").innerText =
-      "0";
-
-      document.getElementById("total-deleted").innerText =
-      "0";
-
-      showUser();
-      alert("Logged out Successfully!");
-
-      const logoutBtn =
-      document.querySelector(".logout");
-      if(logoutBtn) {
-        logoutBtn.style.display = "none";
-      }
-      location.reload();
-    }
-
-    window.onload = function() {
-      showUser();
-      bindLogoutButton();
-
-      const user =
-      JSON.parse(localStorage.getItem("user"));
-
-       const logoutBtn =
-      document.querySelector(".logout");
-
-        if (user) {
-        showUserCart(user);
-        showUserFavorites(user);
-
-
-      document.getElementById("total").innerText =
-      "$" + user.cart.reduce((sum, item) => sum +
-    item.price, 0);
-
-      if (logoutBtn) logoutBtn.style.display = 
-      "block";
-
-    } else { 
-
-      document.getElementById("total").innerText = 
-  "$0";
-
-      document.getElementById("total-fav").innerText 
-  ="0";
-
-      document.getElementById("total-deleted").innerText =
-      deletedTotal;
-
-      if (logoutBtn) logoutBtn.style.display = "none";
-    } 
-  };
-  
-      let cartTotal = 0;
-
-      function showMsg(msg) {
-        const box = 
-        document.getElementById("notification");
-        if (box) 
-        {box.innerText = msg;
-        box.style.display = "block";
-
-        setTimeout(() => 
-          box.style.display = 
-          "none", 2000);
-      } else { 
-          alert(msg);
-
-      }
-    }
-
-   function getUser() {
-      let user =
-      JSON.parse(localStorage.getItem("user"));
-
-      if(!user) return;
-
-      if(!user.cart) user.cart = [];
-        if(!user.favorites) user.favorites = [];
-        if(!user.deleted) user.deleted =[];
-
-        return user;
-    }
-
-       function showUserCart(user) {
-          const cartContainer =
-          document.getElementById("cart-items");
-          if(!cartContainer) return;
-
-          cartContainer.innerHTML = "";
-
-          user.cart.forEach(item => {
-            const div = document.createElement("div");
-            div.innerText = item.name + " - $" +
-            item.price;
-            cartContainer.appendChild(div);
-          });
-        }
-
-      function removeFromCart(name) {
-        let user =
-        JSON.parse(localStorage.getItem("user"));
-        if(!user) return;
-
-        user.cart = user.cart.filter(item => item.name
-          !== name);
-          localStorage.setItem("user", JSON.stringify(user));
-
-          document.getElementById("total").innerText =
-          "$" + user.cart.reduce((sum, item) => sum
-        + item.price, 0);
-        showMsg(`${name} removed from Cart!`);
-      }
-
-
-      function checkout() {
-        const user =
-        JSON.parse(localStorage.getItem("user"));
-
-        if(!user || user.cart.length === 0) {
-          alert("Cart id empty!");
-          return;
-        }
-
-        const pass = prompt ("Enter password to confirm: ");
-
-        if(!pass || pass.length < 4) {
-          alert("Wrong password!");
-          return;
-        }
-
-        showMsg("Processing order...");
-
-        setTimeout(() => {
-          user.cart = [];
-          localStorage.setItem("user", JSON.stringify(user));
-          showUserCart(user);
-          document.getElementById("total").innerText =
-          "$0";
-
-          alert("Order Successful! ✅");
-
-        }, 2000);
-      }
-       document.addEventListener('DOMContentLoaded', function() {
-       updateFavoritesDisplay();
-       updateFavoritesCounter();
-      });
-
+    window.onload = loadCart;
     </script>
-
 </body>
 </html>
