@@ -1548,6 +1548,7 @@
     }); 
 
     localStorage.setItem("user", JSON.stringify(user));
+       updateCartTotal();
 
     const totalElement = document.getElementById("total");
     if (totalElement) {
@@ -1566,6 +1567,8 @@ function updateCartTotal() {
         totalElement.innerText = "$" + totalSum.toFixed(2);
     }
 }
+
+document.addEventListener("DOMContentLoaded", updateCartTotal);
 
 document.addEventListener("DOMContentLoaded", updateCartTotal);
 
