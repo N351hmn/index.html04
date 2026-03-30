@@ -682,10 +682,12 @@ function addToFavorite(name, price, imgSrc) {
         return;
     }
 
+    const resolvedImg = imgSrc || getFavoriteImage(name, price);
+
     user.favorites.push({
         name: name,
         price: price,
-        img: imgSrc
+      img: resolvedImg
     });
 
     localStorage.setItem("user", JSON.stringify(user));
@@ -697,6 +699,33 @@ function addToFavorite(name, price, imgSrc) {
     updateFavoritesDisplay();
     updateFavoritesCounter();
 }
+
+  function getFavoriteImage(name, price) {
+    const favoriteImages = {
+      "Green Hoodie with BROOKLYN Word|15": "hoody1.jpg",
+      "White & Purple Hoodie and BROOKLYN|17": "hoody2.jpg",
+      "Blue Hoodie|15": "hoody3.jpg",
+      "Green Hoodie|18": "hoody4.jpg",
+      "Black Hoodie with a Painting from the behind|20": "hoody5.jpg",
+      "Brown full suit|50": "full1.jfif",
+      "Gray full suit with a word|75": "full2.jfif",
+      "Blue full suit with a word|75": "full3.jfif",
+      "Navy full suit with a moonlight word|80": "full4.jpg",
+      "Gray full suit with a word|85": "full5.jpg",
+      "2 Green Hoodies|175": "couples1.jpg",
+      "2 Green & Gray Hoodies|160": "couples2.jfif",
+      "2 Beige & Darkgreen Hoodies|185": "couples3.jfif",
+      "2 White & Green Hoodies|187": "couples4.jpg",
+      "2 Black & Purple with Draw in Back|218": "couples5.webp",
+      "Full White with Golden lines suit|182": "men1.jfif",
+      "Full Black suit|112": "men2.jpg",
+      "Dark Brown Full suit|158": "men3.jfif",
+      "Black Hoodie with Drawings|190": "men4.jpg",
+      "Dark Green Sweatshirt|118": "men5.jpg"
+    };
+
+    return favoriteImages[`${name}|${price}`] || "images.jfif";
+  }
 
 function updateFavoritesDisplay() {
     const user = getUser();
@@ -713,9 +742,10 @@ function updateFavoritesDisplay() {
     user.favorites.forEach(item => {
         const div = document.createElement("div");
         div.className = "fav-item";
+      const resolvedImg = item.img || getFavoriteImage(item.name, item.price);
 
         div.innerHTML = `
-            <img src="${item.img}" alt="${item.name}" 
+        <img src="${resolvedImg}" alt="${item.name}" 
                  onerror="console.log('Failed to load: ' + this.src); this.src='https://via.placeholder.com/250?text=Check+Filename';">
             <p>${item.name} - $${item.price}</p>
             <button class="remove-btn" onclick="removeFromFavorite('${item.name}')" 
