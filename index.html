@@ -219,7 +219,7 @@
       }
       .slider {
         position: relative;
-        width: 500px;
+        width: 1390px;
         height: 350px;
         margin: auto;
         overflow: hidden;
@@ -237,7 +237,7 @@
         display: none;
       }
       .slide {
-        width: 70%;
+        width: 23%;
         margin-right: 20px;
         text-align: center;
         flex-shrink: 0;
@@ -1548,7 +1548,8 @@
     }); 
 
     localStorage.setItem("user", JSON.stringify(user));
-       updateCartTotal();
+
+    updateCartTotal();
 
     const totalElement = document.getElementById("total");
     if (totalElement) {
@@ -1568,7 +1569,6 @@ function updateCartTotal() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", updateCartTotal);
 
 document.addEventListener("DOMContentLoaded", updateCartTotal);
 
@@ -1842,32 +1842,38 @@ document.addEventListener("DOMContentLoaded", updateCartTotal);
         document.getElementById(id).style.display = "block";
       }
 
-      const sliders = document.querySelectorAll(".slider-track");
-      function slideRight(btn) {
-        const track = btn.parentElement.querySelector(".slider-track");
-        track.scrollLeft += 500;
-      }
+      const sliders =
+         document.querySelectorAll(".slider-track")
 
-      function slideLeft(btn) {
-        const track = btn.parentElement.querySelector(".slider-track");
-        track.scrollLeft -= 500;
-      }
+        function slideRight(btn) {
+          const track = 
+          btn.parentElement.querySelector(".slider-track")
+          track.scrollLeft += 300
+        }
 
-      let direction = 1;
+        function slideLeft(btn) {
+          const track = 
+          btn.parentElement.querySelector(".slider-track")
+          track.scrollLeft -= 300
+        }
 
-      setInterval(() => {
-        sliders.forEach((track) => {
-          const maxScroll = track.scrollWidth - track.clientWidth;
+        let direction = 1
 
-          const randomPosition = Math.random() * maxScroll;
+        setInterval(() => {
+
+          sliders.forEach(track => {
+
+          const maxScroll = track.scrollWidth - track.clientWidth 
+
+          const randomPosition = Math.random() * maxScroll
 
           track.scrollTo({
             left: randomPosition,
-            behavior: "smooth",
-          });
-        });
-      }, 3500);
+            behavior: "smooth"
+          })
+        })
 
+          }, 3500)
       function showProduct(sectionClass, id, event) {
         if (event) event.preventDefault();
 
