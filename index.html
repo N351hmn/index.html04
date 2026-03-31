@@ -381,8 +381,10 @@
           font-size: 18px;
           padding: 5px 12px;
         }
-        .slider {
+         .slider {
           width: 90%;
+          max-width: 1300px;
+          height: 350px;
         }
       }
       @media (max-width: 600px) {
@@ -409,8 +411,14 @@
           padding: 10px 5px;
         }
         .slider {
+          position: relative;
           width: 100%;
-          height: auto;
+          height: 200px; /* smaller for phone */
+          margin: auto;
+          overflow: hidden;
+          display: flex;
+          gap: 5px;
+          align-items: center;
         }
         .slide img {
           width: 160px;
